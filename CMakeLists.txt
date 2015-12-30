@@ -16,4 +16,8 @@ install(
     DESTINATION include/tip/lru-cache
 )
 
-# TODO Tests
+if(BUILD_TESTS)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+    enable_testing()
+    add_subdirectory(test)
+endif()

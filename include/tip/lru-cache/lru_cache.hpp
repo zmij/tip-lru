@@ -260,20 +260,23 @@ public:
 	bool
 	exists(key_type const& key) const
 	{
+		lock_type lock(mutex_);
 		return cache_map_.find(key) != cache_map_.end();
 	}
 	bool
 	empty() const
 	{
+		lock_type lock(mutex_);
 		return cache_list_.empty();
 	}
 	size_t
 	size() const
 	{
+		lock_type lock(mutex_);
 		return cache_list_.size();
 	}
 private:
-	mutex_type			mutex_;
+	mutable mutex_type	mutex_;
 	lru_list_type		cache_list_;
 	lru_map_type		cache_map_;
 

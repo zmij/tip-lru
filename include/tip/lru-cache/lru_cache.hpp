@@ -348,7 +348,7 @@ public:
 	put(typename types::key_type const& key, typename types::value_type const& value)
 	{
 		base_type::put(key,
-				element_type( new value_holder_type{ key, value }) );
+				element_type( new value_holder_type{ key, value, typename types::time_type{} }) );
 	}
 };
 
@@ -387,7 +387,7 @@ public:
 	{
 		typename types::key_type const& key = get_key_(value);
 		base_type::put(key,
-				element_type( new value_holder_type{ value }) );
+				element_type( new value_holder_type{ value, typename types::time_type{} }) );
 	}
 private:
 	get_key_function get_key_;

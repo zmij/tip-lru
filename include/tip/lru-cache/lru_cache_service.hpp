@@ -118,7 +118,7 @@ private:
 						this, std::placeholders::_1));
 	}
 	void
-	timer_expired( boost::system::error_code const& ec )
+	timer_expired( boost::system::error_code const&)
 	{
 		container_base::expire(max_age_);
 		timer_.expires_at(timer_.expires_at() + timer_interval_);

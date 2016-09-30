@@ -1,12 +1,14 @@
-#	CMakeLists.txt for tip-lru library
-#	
-#	@author zmij
-#	@date Nov 30, 2015
+#    CMakeLists.txt for tip-lru library
+#
+#    @author zmij
+#    @date Nov 30, 2015
 
 cmake_minimum_required(VERSION 2.6)
 
 set(lib_name lru)
 string(TOUPPER ${lib_name} LIB_NAME)
+
+add_definitions("-std=c++11")
 
 set(
     lru_cache_SRCS

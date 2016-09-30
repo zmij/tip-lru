@@ -8,6 +8,23 @@ cmake_minimum_required(VERSION 2.6)
 set(lib_name lru)
 string(TOUPPER ${lib_name} LIB_NAME)
 
+set(_pname ${lib_name})
+if (PROJECT_VERSION)
+    set(_pversion ${PROJECT_VERSION})
+else()
+    set(_pversion 0.1.0)
+endif()
+
+if (${CMAKE_VERSION} VERSION_GREATER "3.0")
+    cmake_policy(SET CMP0048 NEW)
+    project(${_pname} VERSION ${_pversion})
+else()
+    project(${_pname})
+    set(PROJECT_VERSION ${_pversion})
+endif()
+
+option(BUILD_TESTS "Build tests for ${lib_name} library" ON)
+
 add_definitions("-std=c++11")
 
 set(

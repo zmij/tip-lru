@@ -12,7 +12,7 @@ set(_pname ${lib_name})
 if (PROJECT_VERSION)
     set(_pversion ${PROJECT_VERSION})
 else()
-    set(_pversion 0.1.0)
+    set(_pversion 1.0.0)
 endif()
 
 if (${CMAKE_VERSION} VERSION_GREATER "3.0")

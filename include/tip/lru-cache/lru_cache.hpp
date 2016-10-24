@@ -71,7 +71,7 @@ struct clock_traits< boost::posix_time::microsec_clock > {
     static time_type
     now()
     {
-        return clock_type::local_time();
+        return clock_type::universal_time();
     }
 };
 template < >

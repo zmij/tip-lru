@@ -213,19 +213,18 @@ public:
             cache_map_.erase(f);
         }
     }
-    value_type
-    get(key_type const& key) const
+    bool
+    get(key_type const& key, value_type& val) const
     {
         lock_type lock(mutex_);
         auto f = cache_map_.find(key);
         if (f == cache_map_.end()) {
-            ::std::ostringstream os("No key ");
-            os << key << " in cache of " << typeid(value_type).name();
-            throw ::std::range_error(os.str());
+            return false;
         }
         cache_list_.splice(cache_list_.begin(), cache_list_, f->second);
         set_time_(*f->second, clock_traits_type::now());
-        return (*f->second)->value_;
+        val = (*f->second)->value_;
+        return true;
     }
     void
     shrink(size_t max_size)

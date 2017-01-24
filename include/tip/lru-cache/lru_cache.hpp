@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <atomic>
 
 namespace tip {
 namespace util {
@@ -201,6 +202,7 @@ protected:
         set_time_(elem, clock_traits_type::now());
         cache_list_.push_front(elem);
         cache_map_.insert(::std::make_pair(key, cache_list_.begin()));
+        empty_ = false;
     }
 public:
     void
@@ -212,6 +214,7 @@ public:
             cache_list_.erase(f->second);
             cache_map_.erase(f);
         }
+        empty_ = cache_list_.empty();
     }
     bool
     get(key_type const& key, value_type& val) const
@@ -252,6 +255,7 @@ public:
                 on_erase(key);
             }
         }
+        empty_ = cache_list_.empty();
     }
     void
     clear()
@@ -259,6 +263,7 @@ public:
         lock_type lock(mutex_);
         cache_list_.clear();
         cache_map_.clear();
+        empty_ = true;
     }
     bool
     exists(key_type const& key) const
@@ -269,10 +274,9 @@ public:
     bool
     empty() const
     {
-        lock_type lock(mutex_);
-        return cache_list_.empty();
+        return empty_;
     }
-    size_t
+    ::std::size_t
     size() const
     {
         lock_type lock(mutex_);
@@ -282,6 +286,7 @@ private:
     mutex_type mutable      mutex_;
     lru_list_type mutable   cache_list_;
     lru_map_type            cache_map_;
+    ::std::atomic<bool>     empty_{true};
 
     get_key_function        get_key_;
     get_time_function       get_time_;

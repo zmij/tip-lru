@@ -180,7 +180,7 @@ protected:
     using get_key_function  = ::std::function< key_type(element_type) >;
     using get_time_function = ::std::function< time_type(element_type) >;
     using set_time_function = ::std::function<void(element_type,time_type)>;
-    using mutex_type        = ::std::recursive_mutex;
+    using mutex_type        = ::std::mutex;
     using lock_type         = ::std::lock_guard<mutex_type>;
 public:
     cache_container()
@@ -198,7 +198,7 @@ protected:
     put( key_type const& key, element_type elem)
     {
         lock_type lock(mutex_);
-        erase(key);
+        erase_no_lock(key);
         set_time_(elem, clock_traits_type::now());
         cache_list_.push_front(elem);
         cache_map_.insert(::std::make_pair(key, cache_list_.begin()));
@@ -209,10 +209,16 @@ public:
     erase(key_type const& key)
     {
         lock_type lock(mutex_);
-        auto f = cache_map_.find(key);
-        if (f != cache_map_.end()) {
-            cache_list_.erase(f->second);
-            cache_map_.erase(f);
+        erase_no_lock(key);
+        empty_ = cache_list_.empty();
+    }
+    template < typename InputIterator, typename ExtractId >
+    void
+    erase(InputIterator first, InputIterator last, ExtractId func)
+    {
+        lock_type lock(mutex_);
+        for (; first != last; ++first) {
+            erase_no_lock(func(*first));
         }
         empty_ = cache_list_.empty();
     }
@@ -281,6 +287,16 @@ public:
     {
         lock_type lock(mutex_);
         return cache_list_.size();
+    }
+private:
+    void
+    erase_no_lock(key_type const& key)
+    {
+        auto f = cache_map_.find(key);
+        if (f != cache_map_.end()) {
+            cache_list_.erase(f->second);
+            cache_map_.erase(f);
+        }
     }
 private:
     mutex_type mutable      mutex_;

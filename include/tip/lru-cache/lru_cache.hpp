@@ -249,19 +249,26 @@ public:
     void
     expire(duration_type age, erase_callback on_erase = nullptr)
     {
-        lock_type lock(mutex_);
-        time_type now = clock_traits_type::now();
-        time_type eldest = now - age;
-        for (auto p = cache_list_.rbegin();
-                p != cache_list_.rend() && get_time_(*p) < eldest;) {
-            auto key = get_key_(*p);
-            cache_map_.erase(key);
-            cache_list_.pop_back();
-            if (on_erase) {
-                on_erase(key);
+        lru_list_type to_destroy;
+        {
+            lock_type lock(mutex_);
+            time_type now = clock_traits_type::now();
+            time_type eldest = now - age;
+            auto p = cache_list_.rbegin();
+            for (; p != cache_list_.rend() && get_time_(*p) < eldest; ++p) {
+                auto key = get_key_(*p);
+                cache_map_.erase(key);
+                if (on_erase) {
+                    on_erase(key);
+                }
             }
+            if (p == cache_list_.rend()) {
+                to_destroy.splice(to_destroy.end(), cache_list_);
+            } else {
+                to_destroy.splice(to_destroy.end(), cache_list_, p.base(), cache_list_.end());
+            }
+            empty_ = cache_list_.empty();
         }
-        empty_ = cache_list_.empty();
     }
     void
     clear()

@@ -265,6 +265,8 @@ public:
             if (p == cache_list_.rend()) {
                 to_destroy.splice(to_destroy.end(), cache_list_);
             } else {
+                if (get_time_(*p) >= eldest)
+                    --p;
                 to_destroy.splice(to_destroy.end(), cache_list_, p.base(), cache_list_.end());
             }
             empty_ = cache_list_.empty();

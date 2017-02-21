@@ -263,8 +263,15 @@ public:
                         on_erase(key);
                     }
                 }
-                if (get_time_(*p) >= eldest)
+                if (get_time_(*p) >= eldest) {
                     ++p;
+                } else {
+                    auto key = get_key_(*p);
+                    cache_map_.erase(key);
+                    if (on_erase) {
+                        on_erase(key);
+                    }
+                }
                 to_destroy.splice(to_destroy.end(), cache_list_, p, cache_list_.end());
                 empty_ = cache_list_.empty();
             }

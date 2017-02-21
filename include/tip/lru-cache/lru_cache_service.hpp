@@ -40,7 +40,8 @@ public:
     using timer_iterval_type= deadline_timer::duration_type;
 
     using key_type          = typename container_base::key_type;
-    using erase_callback    = ::std::function< void(key_type const&) >;
+    using value_type        = typename container_base::value_type;
+    using erase_callback    = ::std::function< void(value_type const&) >;
 public:
     //@{
     /** @name Constructors required for compiling use_service template function */
@@ -127,11 +128,13 @@ private:
                         this, std::placeholders::_1));
     }
     void
-    timer_expired( boost::system::error_code const&)
+    timer_expired( boost::system::error_code const& ec)
     {
-        container_base::expire(max_age_, on_erase_);
-        timer_.expires_at(timer_.expires_at() + timer_interval_);
-        start_timer();
+        if (!ec) {
+            container_base::expire(max_age_, on_erase_);
+            timer_.expires_at(timer_.expires_at() + timer_interval_);
+            start_timer();
+        }
     }
 private:
     timer_iterval_type  timer_interval_;

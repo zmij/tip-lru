@@ -172,7 +172,7 @@ public:
     using duration_type     = typename types::duration_type;
     using clock_traits_type = typename types::clock_traits_type;
     using element_type      = ::std::shared_ptr< value_holder >;
-    using erase_callback    = ::std::function< void(key_type const&) >;
+    using erase_callback    = ::std::function< void(value_type const&) >;
 protected:
     using lru_list_type     = ::std::list< element_type >;
     using list_iterator     = typename lru_list_type::iterator;
@@ -259,21 +259,20 @@ public:
                 for (; p != cache_list_.begin() && get_time_(*p) < eldest; --p) {
                     auto key = get_key_(*p);
                     cache_map_.erase(key);
-                    if (on_erase) {
-                        on_erase(key);
-                    }
                 }
                 if (get_time_(*p) >= eldest) {
                     ++p;
                 } else {
                     auto key = get_key_(*p);
                     cache_map_.erase(key);
-                    if (on_erase) {
-                        on_erase(key);
-                    }
                 }
                 to_destroy.splice(to_destroy.end(), cache_list_, p, cache_list_.end());
                 empty_ = cache_list_.empty();
+            }
+        }
+        if (on_erase) {
+            for (auto const& e : to_destroy) {
+                on_erase(e->value_);
             }
         }
     }

@@ -10,6 +10,7 @@
 
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <tip/lru-cache/lru_cache.hpp>
+#include <chrono>
 
 TEST(LruContainer, KeyValue)
 {

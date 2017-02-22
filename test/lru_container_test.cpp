@@ -112,7 +112,7 @@ TEST(LruContainer, KeyExtractor)
 
 struct test_struct {
     using on_destroy = ::std::function<void()>;
-    using time_point = ::std::chrono::system_clock::time_point;
+    using time_point = ::std::chrono::high_resolution_clock::time_point;
     using get_time   = ::std::function< time_point(test_struct const&) >;
     using set_time   = ::std::function< void(test_struct&, time_point) >;
 
@@ -172,7 +172,7 @@ TEST(LruContainer, IntrusiveTime)
 {
     using test_lru = tip::util::lru_cache<test_struct, int,
             test_struct::get_time, test_struct::set_time>;
-    using clock = ::std::chrono::system_clock;
+    using clock = ::std::chrono::high_resolution_clock;
 
     int count = 0;
     auto on_destroy = [&](){--count;};

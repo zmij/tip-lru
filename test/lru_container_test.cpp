@@ -192,7 +192,7 @@ TEST(LruContainer, IntrusiveTime)
     lru.put(7, test_struct{ on_destroy, clock::now() });
     lru.put(8, test_struct{ on_destroy, clock::now() });
     lru.put(9, test_struct{ on_destroy, clock::now() });
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     lru.put(10, test_struct{ on_destroy, clock::now() });
     lru.put(11, test_struct{ on_destroy, clock::now() });
@@ -204,22 +204,22 @@ TEST(LruContainer, IntrusiveTime)
     lru.put(17, test_struct{ on_destroy, clock::now() });
     lru.put(18, test_struct{ on_destroy, clock::now() });
     lru.put(19, test_struct{ on_destroy, clock::now() });
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     count = lru.size();
     EXPECT_EQ(20, lru.size());
 
-    lru.expire(std::chrono::milliseconds(15));
+    lru.expire(std::chrono::milliseconds(150));
     EXPECT_EQ(10, count);
     EXPECT_EQ(10, lru.size());
-    lru.expire(std::chrono::milliseconds(5));
+    lru.expire(std::chrono::milliseconds(50));
     EXPECT_EQ(0, count);
     EXPECT_EQ(0, lru.size());
 
     lru.put(1, test_struct{ on_destroy, clock::now() });
     count = lru.size();
     EXPECT_EQ(1, lru.size());
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    lru.expire(std::chrono::milliseconds(5));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    lru.expire(std::chrono::milliseconds(50));
     EXPECT_EQ(0, count);
     EXPECT_EQ(0, lru.size());
 }

@@ -18,6 +18,7 @@
 #include <iostream>
 #include <sstream>
 #include <atomic>
+#include <chrono>
 
 namespace tip {
 namespace util {

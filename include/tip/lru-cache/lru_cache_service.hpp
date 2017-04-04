@@ -8,9 +8,13 @@
 #ifndef TIP_LRU_CACHE_LRU_CACHE_SERVICE_HPP_
 #define TIP_LRU_CACHE_LRU_CACHE_SERVICE_HPP_
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#pragma GCC diagnostic pop
+
 #include <tip/lru-cache/lru_cache.hpp>
 
 #include <functional>
